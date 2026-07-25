@@ -3,131 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Build Cycle: From Sensemaking to Showcase</title>
+    <title>The Build Cycle: From Sensemaking to Showcase · The Upskilling Labs</title>
+    <!-- Brand Font: Geologica -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #121212;
-            --text-color: #f5f5f5;
-            --accent-color: #4CAF50;
-            --visual-bg: #2a2a2a;
+            --ink: #00141B;
+            --navy: #03232A;
+            --forest: #005F68;
+            --teal: #0094A0;
+            --teal-deep: #007882;
+            --red: #E11D2A;
+            --paper: #F6F4EF;
+            --white: #FFFFFF;
+            --od1: rgba(255, 255, 255, 0.95);
+            --od2: rgba(255, 255, 255, 0.64);
+            --od3: rgba(255, 255, 255, 0.40);
+            --rule-d: rgba(255, 255, 255, 0.16);
+            --radius: 14px;
         }
-        
-        body, html {
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        body, html {
             width: 100%;
             height: 100%;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden; /* Prevents scrolling */
+            font-family: 'Geologica', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--ink);
+            color: var(--od1);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        #presentation-container {
+        /* Brand Cover Surface (Teal radiates from corners, never center) */
+        .presentation-wrapper {
+            position: relative;
             width: 100vw;
             height: 100vh;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .slide {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 80%;
-            max-width: 1200px;
-            height: 80%;
-            text-align: center;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
-        .slide.active {
-            display: flex;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
-        }
-
-        .slide-number {
-            font-size: 1rem;
-            color: #888;
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .visual-placeholder {
-            width: 100%;
-            max-width: 800px;
-            height: 350px;
-            background-color: var(--visual-bg);
-            border: 2px dashed #555;
-            border-radius: 12px;
+            background: 
+                radial-gradient(120% 80% at 0% 100%, rgba(0, 148, 160, 0.55), transparent 56%),
+                radial-gradient(110% 70% at 100% 0%, rgba(0, 148, 160, 0.40), transparent 50%),
+                linear-gradient(160deg, var(--ink) 0%, var(--navy) 55%, var(--forest) 120%);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding: 2rem;
-            box-sizing: border-box;
+            justify-content: space-between;
         }
 
-        .visual-placeholder span {
-            font-weight: bold;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-
-        .visual-placeholder p {
-            font-size: 1.2rem;
-            color: #ddd;
-            margin: 0;
-            font-style: italic;
-        }
-
-        .talking-point {
-            font-size: 1.75rem;
-            line-height: 1.5;
-            max-width: 900px;
-            font-weight: 300;
-        }
-
-        /* Controls */
-        .controls {
+        /* SVG Grain Overlay */
+        .grain-overlay {
             position: absolute;
-            bottom: 30px;
-            right: 30px;
-            z-index: 100;
-            display: flex;
-            gap: 15px;
-        }
-
-        button {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            backdrop-filter: blur(5px);
-        }
-
-        button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--accent-color);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.5;
+            mix-blend-mode: overlay;
+            z-index: 1;
         }
 
         /* Progress Bar */
@@ -136,309 +75,708 @@
             top: 0;
             left: 0;
             height: 4px;
-            background-color: var(--accent-color);
-            transition: width 0.3s ease;
+            background-color: var(--teal);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+
+        /* Slide Stage */
+        .stage {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: calc(100vh - 80px);
+            padding: 40px 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Slide Shell - Flush Left Grid */
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1600px;
+            height: 100%;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            text-align: left; /* Flush left, ragged right */
+        }
+
+        .slide.active {
+            display: grid;
+        }
+
+        /* Typography System */
+        .eyebrow {
+            font-size: 12px;
+            line-height: 16px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 48px;
+            line-height: 52px;
+            font-weight: 700;
+            letter-spacing: -0.034em;
+            color: var(--white);
+            margin-bottom: 24px;
+        }
+
+        .talking-point {
+            font-size: 20px;
+            line-height: 32px;
+            font-weight: 400;
+            color: var(--od2);
+            max-width: 680px;
+        }
+
+        .talking-point strong {
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        /* Visual Card Container (14px Radius) */
+        .visual-card {
+            background: rgba(0, 20, 27, 0.6);
+            border: 1px solid var(--rule-d);
+            border-radius: var(--radius);
+            height: 100%;
+            max-height: 560px;
+            width: 100%;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Graphic Elements */
+        svg.graphic {
+            width: 100%;
+            height: 100%;
+            max-height: 480px;
+        }
+
+        /* Footer Rail */
+        .footer-rail {
+            position: relative;
+            z-index: 10;
+            height: 80px;
+            padding: 0 60px;
+            border-top: 1px solid var(--rule-d);
+            background: var(--ink);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-wordmark {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        .partner-rail {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--od3);
+        }
+
+        .partner-rail span {
+            color: var(--od2);
+            font-weight: 500;
+        }
+
+        .slide-counter {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--teal);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 100px;
+            right: 60px;
+            z-index: 100;
+            display: flex;
+            gap: 12px;
+        }
+
+        button.btn-labs {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+            border: 1px solid var(--rule-d);
+            padding: 12px 20px;
+            border-radius: var(--radius); /* 14px radius, strictly no pills */
+            font-family: 'Geologica', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        button.btn-labs:hover {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: var(--teal);
+        }
+
+        /* Layout variants */
+        .slide-title-layout {
+            grid-template-columns: 1fr;
+            max-width: 1000px;
+        }
+
+        @media (max-width: 1024px) {
+            .stage { padding: 24px; }
+            .slide { grid-template-columns: 1fr; gap: 24px; }
+            .visual-card { max-height: 320px; }
+            h1 { font-size: 32px; line-height: 36px; }
+            .talking-point { font-size: 16px; line-height: 24px; }
+            .footer-rail { padding: 0 24px; }
+            .controls { bottom: 90px; right: 24px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="progress-bar" style="width: 0%;"></div>
+    <div class="presentation-wrapper">
+        <!-- SVG Noise Grain Overlay -->
+        <svg class="grain-overlay">
+            <filter id="noise">
+                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+                <feColorMatrix type="saturate" values="0"/>
+            </filter>
+            <rect width="100%" height="100%" filter="url(#noise)"/>
+        </svg>
 
-    <div id="presentation-container">
-        
-        <!-- Slide 0: Title Slide -->
-        <div class="slide active">
-            <h1>The Build Cycle</h1>
-            <div class="slide-number">From Sensemaking to Showcase</div>
-            <div class="talking-point" style="margin-top: 2rem;">
-                An intensive applied learning experience in Civics & Elections.
+        <div id="progress-bar" style="width: 0%;"></div>
+
+        <div class="stage">
+
+            <!-- Slide 0: Title Slide -->
+            <div class="slide slide-title-layout active">
+                <div>
+                    <div class="eyebrow">The Upskilling Labs · Build Cycles · 2026</div>
+                    <h1 style="font-size: 64px; line-height: 68px; margin-bottom: 16px;">The Build Cycle</h1>
+                    <div class="eyebrow" style="color: var(--od2); font-size: 20px; text-transform: none; letter-spacing: normal; margin-bottom: 32px;">
+                        From Sensemaking to Showcase
+                    </div>
+                    <div class="talking-point">
+                        An intensive applied learning experience in Civics &amp; Elections. Build a portfolio of work that is not just well-coded, but remarkable and deeply meaningful.
+                    </div>
+                    <div style="margin-top: 48px; font-size: 13px; color: var(--od3);">
+                        Press <strong style="color: var(--white);">Space</strong> or <strong style="color: var(--white);">Right Arrow</strong> to step through slides.
+                    </div>
+                </div>
             </div>
-            <p style="color: #666; margin-top: 4rem; font-size: 1rem;">Press <strong>Space</strong> or <strong>Right Arrow</strong> to begin.</p>
+
+            <!-- Slide 1 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 01 · Purpose</div>
+                    <h1>Your "Why"</h1>
+                    <div class="talking-point">
+                        You are here for an intensive applied learning experience. By using your emerging tech skills to tackle complex real-world issues in Civics &amp; Elections, you will build a portfolio of work that is not just well-coded, but truly remarkable and deeply meaningful.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="20" y="40" width="210" height="270" rx="14" fill="#03232A" stroke="rgba(255,255,255,0.16)"/>
+                        <path d="M40 90 L120 170 L80 230 L180 110 L200 250" stroke="#E11D2A" stroke-width="2" stroke-dasharray="4 4"/>
+                        <circle cx="120" cy="170" r="6" fill="#E11D2A"/>
+                        <circle cx="180" cy="110" r="6" fill="#E11D2A"/>
+                        <text x="40" y="70" fill="#8A979B" font-size="11" font-family="Geologica">REAL-WORLD CHAOS</text>
+
+                        <rect x="270" y="40" width="210" height="270" rx="14" fill="#00141B" stroke="#0094A0" stroke-width="2"/>
+                        <rect x="290" y="70" width="170" height="20" rx="4" fill="#007882"/>
+                        <rect x="290" y="105" width="120" height="10" rx="2" fill="rgba(255,255,255,0.4)"/>
+                        <rect x="290" y="125" width="150" height="10" rx="2" fill="rgba(255,255,255,0.2)"/>
+                        <rect x="290" y="150" width="170" height="130" rx="8" fill="#03232A" stroke="rgba(255,255,255,0.1)"/>
+                        <text x="290" y="270" fill="#0094A0" font-size="11" font-family="Geologica" font-weight="700">REMARKABLE PORTFOLIO</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 02 · Problem Space</div>
+                    <h1>Not a Simple Puzzle</h1>
+                    <div class="talking-point">
+                        To build that remarkable portfolio, you can't solve simple puzzles. The issues we face are open, complex, dynamic, and networked problem situations. They are messy, lack clear boundaries, and change rapidly.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <g stroke="#0094A0" stroke-width="1.5" opacity="0.6">
+                            <line x1="100" y1="80" x2="220" y2="150"/>
+                            <line x1="220" y1="150" x2="380" y2="100"/>
+                            <line x1="220" y1="150" x2="280" y2="260"/>
+                            <line x1="280" y1="260" x2="420" y2="240"/>
+                            <line x1="100" y1="80" x2="140" y2="240"/>
+                            <line x1="140" y1="240" x2="280" y2="260"/>
+                        </g>
+                        <circle cx="100" cy="80" r="8" fill="#0094A0"/>
+                        <circle cx="220" cy="150" r="12" fill="#E11D2A"/>
+                        <circle cx="380" cy="100" r="7" fill="#0094A0"/>
+                        <circle cx="280" cy="260" r="10" fill="#007882"/>
+                        <circle cx="420" cy="240" r="6" fill="#0094A0"/>
+                        <circle cx="140" cy="240" r="8" fill="#0094A0"/>
+                        <text x="235" y="155" fill="#FFFFFF" font-size="10" font-family="Geologica" font-weight="700">DYNAMIC CORE</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 03 · Pitfalls</div>
+                    <h1>The Traps to Avoid</h1>
+                    <div class="talking-point">
+                        Resist the urge to jump straight to coding. If you lock onto an immediate solution, you trap yourself in a "self-made box" of obvious ideas, or become an isolated "lone warrior" trying to own the problem without collaboration.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="50" y="80" width="170" height="170" rx="14" fill="none" stroke="#E11D2A" stroke-width="2" stroke-dasharray="6 6"/>
+                        <rect x="95" y="125" width="80" height="80" rx="8" fill="#E11D2A" opacity="0.2"/>
+                        <text x="75" y="275" fill="#E11D2A" font-size="12" font-family="Geologica" font-weight="600">SELF-MADE BOX</text>
+
+                        <circle cx="370" cy="150" r="16" fill="#007882"/>
+                        <path d="M 370 180 L 370 230 M 350 200 L 390 200" stroke="#007882" stroke-width="3"/>
+                        <circle cx="280" cy="100" r="30" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)"/>
+                        <text x="315" y="275" fill="#8A979B" font-size="12" font-family="Geologica" font-weight="600">LONE WARRIOR ISOLATION</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 04 · Methodology</div>
+                    <h1>The 9-Step Process</h1>
+                    <div class="talking-point">
+                        To solve the unsolvable, we adapt Kees Dorst’s 9-Step Frame Innovation process. Today, our Sprint focuses purely on mapping the problem using Steps 1 through 5.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <g font-family="Geologica" font-size="11" font-weight="600">
+                            <rect x="40" y="30" width="420" height="28" rx="6" fill="#007882"/>
+                            <text x="55" y="48" fill="#FFFFFF">1. Archaeology  2. Paradox  3. Context  4. Field  5. Themes</text>
+                            <text x="360" y="48" fill="#FFFFFF" font-size="9">(TODAY'S SPRINT)</text>
+
+                            <rect x="40" y="70" width="420" height="28" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+                            <text x="55" y="88" fill="#8A979B">6. Frames (Creative Leap)</text>
+
+                            <rect x="40" y="110" width="420" height="28" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+                            <text x="55" y="128" fill="#8A979B">7. Futures (Hackathon Prototyping)</text>
+
+                            <rect x="40" y="150" width="420" height="28" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+                            <text x="55" y="168" fill="#8A979B">8. Transformation (Partner Crucible)</text>
+
+                            <rect x="40" y="190" width="420" height="28" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)"/>
+                            <text x="55" y="208" fill="#8A979B">9. Integration (Demo Day Showcase)</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 05 · Dynamics</div>
+                    <h1>Not a Staircase, a Cycle</h1>
+                    <div class="talking-point">
+                        Don't be fooled by the numbered list. Frame innovation is "deceptively linear". In reality, it is a recursive cycle where you will constantly zoom in on the details and zoom out to see the big picture.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <path d="M 150 175 A 100 100 0 1 0 350 175 A 100 100 0 1 0 150 175" stroke="#0094A0" stroke-width="3" fill="none" stroke-dasharray="8 8"/>
+                        <path d="M 200 175 A 50 50 0 1 0 300 175 A 50 50 0 1 0 200 175" stroke="#E11D2A" stroke-width="2" fill="none"/>
+                        <circle cx="250" cy="125" r="8" fill="#0094A0"/>
+                        <circle cx="250" cy="225" r="8" fill="#E11D2A"/>
+                        <text x="205" y="179" fill="#FFFFFF" font-size="11" font-family="Geologica" font-weight="700">ZOOM IN / OUT</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 6 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 06 · Sprint Phase 1</div>
+                    <h1>Solo Sensemaking</h1>
+                    <div class="talking-point">
+                        <strong>Step 3 &amp; 4 (Context &amp; Field).</strong> Start individually. Use your tech skills as sensemaking instruments. Radically widen the arena to map the broad "field" of all potential players and their power dynamics.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="60" y="50" width="380" height="240" rx="14" fill="#03232A" stroke="rgba(255,255,255,0.16)"/>
+                        <circle cx="140" cy="120" r="18" fill="#007882"/>
+                        <circle cx="340" cy="110" r="24" fill="#0094A0"/>
+                        <circle cx="240" cy="220" r="16" fill="#E11D2A"/>
+                        <path d="M140 120 L340 110 M340 110 L240 220 M240 220 L140 120" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+                        <text x="80" y="270" fill="#8A979B" font-size="11" font-family="Geologica">MAPPING POWER DYNAMICS &amp; ACTORS</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 7 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 07 · Sprint Phase 2</div>
+                    <h1>The Mash-Up</h1>
+                    <div class="talking-point">
+                        <strong>Step 5 (Themes).</strong> Merge your individual maps with peers for a "feature harvest." Look for the deep, universal human needs—like trust, isolation, or identity—that are driving the behavior of the players.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <circle cx="190" cy="175" r="90" fill="#007882" opacity="0.4"/>
+                        <circle cx="310" cy="175" r="90" fill="#0094A0" opacity="0.4"/>
+                        <text x="130" y="180" fill="#FFFFFF" font-size="12" font-family="Geologica" font-weight="600">CONTEXT</text>
+                        <text x="310" y="180" fill="#FFFFFF" font-size="12" font-family="Geologica" font-weight="600">FIELD</text>
+                        <text x="222" y="170" fill="#FFFFFF" font-size="11" font-family="Geologica" font-weight="700">HUMAN</text>
+                        <text x="222" y="185" fill="#FFFFFF" font-size="11" font-family="Geologica" font-weight="700">THEMES</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 8 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 08 · Sprint Phase 3</div>
+                    <h1>The Fork</h1>
+                    <div class="talking-point">
+                        <strong>Step 2 (Paradox).</strong> Break away to propose an evidence-backed problem arena built around a core "paradox". You are not pitching a solution; you are pitching a compelling, unresolved mystery.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <path d="M 60 175 L 220 175 L 380 90 M 220 175 L 380 260" stroke="#0094A0" stroke-width="3"/>
+                        <circle cx="380" cy="90" r="20" fill="#E11D2A"/>
+                        <text x="375" y="96" fill="#FFFFFF" font-size="18" font-family="Geologica" font-weight="700">?</text>
+                        <text x="240" y="150" fill="#8A979B" font-size="11" font-family="Geologica">CORE PARADOX FORK</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 9 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 09 · Sprint Phase 4</div>
+                    <h1>Curation</h1>
+                    <div class="talking-point">
+                        The community votes, and 4 to 6 seeds become Candidate Pods. If your idea isn't chosen, it's not a "no." Unused ideas become our shared "intellectual capital" saved for future inspiration.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="50" y="50" width="110" height="90" rx="14" fill="#007882"/>
+                        <rect x="180" y="50" width="110" height="90" rx="14" fill="#007882"/>
+                        <rect x="310" y="50" width="110" height="90" rx="14" fill="#007882"/>
+
+                        <rect x="50" y="170" width="370" height="110" rx="14" fill="#03232A" stroke="rgba(255,255,255,0.16)"/>
+                        <text x="70" y="200" fill="#8A979B" font-size="11" font-family="Geologica" font-weight="600">SHARED INTELLECTUAL CAPITAL REPOSITORY</text>
+                        <circle cx="90" cy="235" r="10" fill="rgba(255,255,255,0.2)"/>
+                        <circle cx="130" cy="235" r="10" fill="rgba(255,255,255,0.2)"/>
+                        <circle cx="170" cy="235" r="10" fill="rgba(255,255,255,0.2)"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 10 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 10 · Sprint Phase 5</div>
+                    <h1>Team Up</h1>
+                    <div class="talking-point">
+                        Join a Candidate Pod. Stop working solo. Co-evolve your understanding of the problem and consolidate your collective evidence into one rich, complex map.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="120" y="60" width="260" height="230" rx="14" fill="#03232A" stroke="#0094A0" stroke-width="2"/>
+                        <circle cx="250" cy="175" r="30" fill="#007882"/>
+                        <circle cx="190" cy="120" r="14" fill="#E11D2A"/>
+                        <circle cx="310" cy="120" r="14" fill="#0094A0"/>
+                        <circle cx="190" cy="230" r="14" fill="#0094A0"/>
+                        <circle cx="310" cy="230" r="14" fill="#E11D2A"/>
+                        <text x="212" y="179" fill="#FFFFFF" font-size="10" font-family="Geologica" font-weight="700">POD MAP</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 11 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 11 · Today's Deliverable</div>
+                    <h1>The EOD Pitch</h1>
+                    <div class="talking-point">
+                        By the End of the Day, your Candidate Pod will deliver a presentation and a website. Pitch an irresistible opportunity for investigation to the entire upskilling community.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="60" y="50" width="380" height="230" rx="14" fill="#00141B" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                        <path d="M60 50 H440 V80 H60 Z" fill="#03232A"/>
+                        <circle cx="80" cy="65" r="4" fill="#E11D2A"/>
+                        <circle cx="92" cy="65" r="4" fill="#0094A0"/>
+                        <rect x="120" y="60" width="200" height="10" rx="3" fill="rgba(255,255,255,0.1)"/>
+                        <rect x="90" y="110" width="180" height="18" rx="4" fill="#007882"/>
+                        <rect x="90" y="140" width="240" height="10" rx="2" fill="rgba(255,255,255,0.4)"/>
+                        <rect x="90" y="160" width="200" height="10" rx="2" fill="rgba(255,255,255,0.2)"/>
+                        <rect x="90" y="195" width="110" height="32" rx="14" fill="#E11D2A"/>
+                        <text x="112" y="215" fill="#FFFFFF" font-size="10" font-family="Geologica" font-weight="700">PITCH SITE</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 12 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 12 · Deadline: Aug 1</div>
+                    <h1>The Ultimate Test</h1>
+                    <div class="talking-point">
+                        Your Candidate Pod must use your EOD pitch to recruit 12 or more active members. Only teams that cross this threshold will officially initiate and advance.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="50" y="150" width="400" height="24" rx="12" fill="#03232A" stroke="rgba(255,255,255,0.1)"/>
+                        <rect x="50" y="150" width="310" height="24" rx="12" fill="#007882"/>
+                        <line x1="320" y1="110" x2="320" y2="210" stroke="#E11D2A" stroke-width="3" stroke-dasharray="4 4"/>
+                        <text x="290" y="95" fill="#E11D2A" font-size="14" font-family="Geologica" font-weight="700">12+ MEMBERS</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 13 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 13 · July 26 – Aug 10</div>
+                    <h1>The Month of Saturation</h1>
+                    <div class="talking-point">
+                        Leave the building. Immerse yourselves in the field to gain firsthand experience and build genuine empathy. Use your tech to test if your themes hold up against real-world behaviors.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="60" y="60" width="380" height="220" rx="14" fill="#03232A" stroke="rgba(255,255,255,0.16)"/>
+                        <circle cx="150" cy="150" r="40" fill="none" stroke="#0094A0" stroke-width="2"/>
+                        <circle cx="250" cy="180" r="50" fill="none" stroke="#0094A0" stroke-width="2"/>
+                        <circle cx="350" cy="130" r="30" fill="none" stroke="#E11D2A" stroke-width="2"/>
+                        <text x="80" y="250" fill="#8A979B" font-size="11" font-family="Geologica">FIELD OBSERVATION &amp; EMPATHY IMMERSION</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 14 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 14 · Aug 11</div>
+                    <h1>Meet the Pods</h1>
+                    <div class="talking-point">
+                        The exclusive showcase for official 12+ person Pods. Present your deep research and real-world empathy. Invite even more upskillers to join your cause for the Hackathon.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="60" y="60" width="170" height="220" rx="14" fill="#007882"/>
+                        <rect x="270" y="60" width="170" height="220" rx="14" fill="#007882"/>
+                        <text x="80" y="100" fill="#FFFFFF" font-size="14" font-family="Geologica" font-weight="700">POD A (12+)</text>
+                        <text x="290" y="100" fill="#FFFFFF" font-size="14" font-family="Geologica" font-weight="700">POD B (12+)</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 15 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 15 · Due Aug 15</div>
+                    <h1>The Creative Leap</h1>
+                    <div class="talking-point">
+                        <strong>Step 6 (Frames).</strong> With your massive Pod aligned, make the creative leap. Invent your Frame—a completely new perspective phrased as: "If the problem situation is approached as if it is... then...".
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="50" y="70" width="400" height="200" rx="14" fill="#00141B" stroke="#0094A0" stroke-width="2"/>
+                        <text x="80" y="130" fill="#8A979B" font-size="12" font-family="Geologica">IF THE PROBLEM SITUATION IS APPROACHED AS IF IT IS...</text>
+                        <text x="80" y="170" fill="#0094A0" font-size="16" font-family="Geologica" font-weight="700">[ NEW PERSPECTIVE FRAME ]</text>
+                        <text x="80" y="210" fill="#8A979B" font-size="12" font-family="Geologica">THEN WE CAN UNLOCK NEW POSSIBILITIES.</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 16 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 16 · Aug 15</div>
+                    <h1>The Hackathon</h1>
+                    <div class="talking-point">
+                        <strong>Step 7 (Futures).</strong> Your 12+ Pod now branches into lean 3-5 person proto-project teams. Use your shared frame to brainstorm rapidly and test completely different tech solutions simultaneously.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <circle cx="100" cy="175" r="35" fill="#007882"/>
+                        <path d="M 135 175 L 260 90 M 135 175 L 260 175 M 135 175 L 260 260" stroke="#0094A0" stroke-width="2"/>
+                        <rect x="260" y="70" width="150" height="40" rx="14" fill="#03232A" stroke="rgba(255,255,255,0.2)"/>
+                        <rect x="260" y="155" width="150" height="40" rx="14" fill="#03232A" stroke="rgba(255,255,255,0.2)"/>
+                        <rect x="260" y="240" width="150" height="40" rx="14" fill="#03232A" stroke="rgba(255,255,255,0.2)"/>
+                        <text x="275" y="95" fill="#FFFFFF" font-size="10" font-family="Geologica">TEAM 1 (3-5)</text>
+                        <text x="275" y="180" fill="#FFFFFF" font-size="10" font-family="Geologica">TEAM 2 (3-5)</text>
+                        <text x="275" y="265" fill="#FFFFFF" font-size="10" font-family="Geologica">TEAM 3 (3-5)</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 17 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 17 · Prototyping</div>
+                    <h1>Prototyping Futures</h1>
+                    <div class="talking-point">
+                        Don't commit to a single massive build yet. Create lightweight digital prototypes and interactive scenarios to test how your proposed tech solutions will actually play out in the real world.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="80" y="60" width="150" height="220" rx="14" fill="#03232A" stroke="#0094A0" stroke-dasharray="4 4"/>
+                        <rect x="270" y="60" width="150" height="220" rx="14" fill="#03232A" stroke="#0094A0" stroke-dasharray="4 4"/>
+                        <text x="100" y="175" fill="#8A979B" font-size="11" font-family="Geologica">PROTOTYPE A</text>
+                        <text x="290" y="175" fill="#8A979B" font-size="11" font-family="Geologica">PROTOTYPE B</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 18 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 18 · Aug 16 - Sept 14</div>
+                    <h1>The Crucible</h1>
+                    <div class="talking-point">
+                        <strong>Step 8 (Transformation).</strong> Critically evaluate feasibility. You must use your prototype to broker an alliance with a specific client or coalition willing to partner with you.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="70" y="110" width="150" height="130" rx="14" fill="#007882"/>
+                        <rect x="280" y="110" width="150" height="130" rx="14" fill="#E11D2A"/>
+                        <path d="M 220 175 L 280 175" stroke="#FFFFFF" stroke-width="4"/>
+                        <text x="95" y="175" fill="#FFFFFF" font-size="12" font-family="Geologica" font-weight="700">TECH POD</text>
+                        <text x="295" y="175" fill="#FFFFFF" font-size="12" font-family="Geologica" font-weight="700">PARTNER</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 19 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 19 · Sept 15</div>
+                    <h1>Meet the Projects</h1>
+                    <div class="talking-point">
+                        Secure your "Problem Owner." The 3-5 person teams that successfully secure a real-world partner graduate to become official Project Teams, locking in their focus for the final build.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="100" y="80" width="300" height="180" rx="14" fill="#03232A" stroke="#007882" stroke-width="2"/>
+                        <text x="130" y="140" fill="#FFFFFF" font-size="18" font-family="Geologica" font-weight="700">GRADUATED PROJECT</text>
+                        <text x="130" y="180" fill="#0094A0" font-size="12" font-family="Geologica">VERIFIED PROBLEM OWNER ATTACHED</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Slide 20 -->
+            <div class="slide">
+                <div>
+                    <div class="eyebrow">Slide 20 · Oct 13</div>
+                    <h1>Demo Day &amp; Showcase</h1>
+                    <div class="talking-point">
+                        <strong>Step 9 (Integration).</strong> The finish line. You deliver the final, fully functional tech build, beautifully integrated into the everyday context of your problem owner. This is your remarkable and meaningful portfolio.
+                    </div>
+                </div>
+                <div class="visual-card">
+                    <svg class="graphic" viewBox="0 0 500 350" fill="none">
+                        <rect x="50" y="50" width="400" height="250" rx="14" fill="#00141B" stroke="#0094A0" stroke-width="2"/>
+                        <circle cx="250" cy="150" r="50" fill="#E11D2A"/>
+                        <text x="218" y="155" fill="#FFFFFF" font-size="12" font-family="Geologica" font-weight="700">SHOWCASE</text>
+                        <text x="145" y="240" fill="#FFFFFF" font-size="12" font-family="Geologica">REMARKABLE &amp; MEANINGFUL PORTFOLIO</text>
+                    </svg>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Slide 1 -->
-        <div class="slide">
-            <h1>Your "Why"</h1>
-            <div class="slide-number">Slide 1</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A split screen: on one side, a sleek, highly professional digital portfolio; on the other, a tangled, messy web representing the real world.</p>
+        <!-- Persistent Footer Rail -->
+        <div class="footer-rail">
+            <div class="brand-lockup">
+                <!-- SVG Orb Mark (Teal upper hemisphere, red lower lobe, teal swoosh) -->
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <circle cx="16" cy="16" r="15" fill="#00141B"/>
+                    <path d="M 3 16 A 13 13 0 0 1 29 16 Z" fill="#0094A0"/>
+                    <path d="M 3 16 A 13 13 0 0 0 29 16 Z" fill="#E11D2A"/>
+                    <path d="M 2 18 C 10 10 22 10 30 18 C 22 14 10 14 2 18 Z" fill="#0094A0"/>
+                </svg>
+                <div class="brand-wordmark">The Upskilling Labs</div>
             </div>
-            <div class="talking-point">
-                You are here for an intensive applied learning experience. By using your emerging tech skills to tackle complex real-world issues in Civics & Elections, you will build a portfolio of work that is not just well-coded, but truly remarkable AND deeply meaningful.
-            </div>
-        </div>
 
-        <!-- Slide 2 -->
-        <div class="slide">
-            <h1>Not a Simple Puzzle</h1>
-            <div class="slide-number">Slide 2</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A chaotic, shifting constellation of interconnected dots.</p>
+            <div class="partner-rail">
+                <span>DC Public Library</span> · <span>Levy Strategic Design</span> · <span>Superbloom Design</span>
             </div>
-            <div class="talking-point">
-                To build that remarkable portfolio, you can't solve simple puzzles. The issues we face are open, complex, dynamic, and networked problem situations. They are messy, lack clear boundaries, and change rapidly.
-            </div>
-        </div>
 
-        <!-- Slide 3 -->
-        <div class="slide">
-            <h1>The Traps to Avoid</h1>
-            <div class="slide-number">Slide 3</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A person trapped in a small cardboard box, and a lone knight facing a dragon.</p>
-            </div>
-            <div class="talking-point">
-                Resist the urge to jump straight to coding. If you lock onto an immediate solution, you trap yourself in a "self-made box" of obvious ideas, or become an isolated "lone warrior" trying to own the problem without collaboration.
-            </div>
-        </div>
-
-        <!-- Slide 4 -->
-        <div class="slide">
-            <h1>The 9-Step Process</h1>
-            <div class="slide-number">Slide 4</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A list of the 9 steps of Frame Innovation: 1. Archaeology, 2. Paradox, 3. Context, 4. Field, 5. Themes, 6. Frames, 7. Futures, 8. Transformation, 9. Integration.</p>
-            </div>
-            <div class="talking-point">
-                To solve the unsolvable, we adapt Kees Dorst’s 9-Step Frame Innovation process. Today, our Sprint focuses purely on mapping the problem using Steps 1 through 5.
-            </div>
-        </div>
-
-        <!-- Slide 5 -->
-        <div class="slide">
-            <h1>Not a Staircase, a Cycle</h1>
-            <div class="slide-number">Slide 5</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A swirling, recursive spiral rather than a straight staircase.</p>
-            </div>
-            <div class="talking-point">
-                Don't be fooled by the numbered list. Frame innovation is "deceptively linear". In reality, it is a recursive cycle where you will constantly zoom in on the details and zoom out to see the big picture.
-            </div>
-        </div>
-
-        <!-- Slide 6 -->
-        <div class="slide">
-            <h1>Solo Sensemaking</h1>
-            <div class="slide-number">Slide 6 (Sprint Phase 1)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A detective’s evidence board with strings connecting data points.</p>
-            </div>
-            <div class="talking-point">
-                Step 3 & 4 (Context & Field). Start individually. Use your tech skills as sensemaking instruments. Radically widen the arena to map the broad "field" of all potential players and their power dynamics.
-            </div>
-        </div>
-
-        <!-- Slide 7 -->
-        <div class="slide">
-            <h1>The Mash-Up</h1>
-            <div class="slide-number">Slide 7 (Sprint Phase 2)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>Several overlapping maps merging into one large landscape.</p>
-            </div>
-            <div class="talking-point">
-                Step 5 (Themes). Merge your individual maps with peers for a "feature harvest." Look for the deep, universal human needs—like trust, isolation, or identity—that are driving the behavior of the players.
-            </div>
-        </div>
-
-        <!-- Slide 8 -->
-        <div class="slide">
-            <h1>The Fork</h1>
-            <div class="slide-number">Slide 8 (Sprint Phase 3)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A fork in the road leading to a giant question mark.</p>
-            </div>
-            <div class="talking-point">
-                Step 2 (Paradox). Break away to propose an evidence-backed problem arena built around a core "paradox". You are not pitching a solution; you are pitching a compelling, unresolved mystery.
-            </div>
-        </div>
-
-        <!-- Slide 9 -->
-        <div class="slide">
-            <h1>Curation</h1>
-            <div class="slide-number">Slide 9 (Sprint Phase 4)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>Ideas pinned to a bright office wall.</p>
-            </div>
-            <div class="talking-point">
-                The community votes, and 4 to 6 seeds become Candidate Pods. If your idea isn't chosen, it's not a "no." Unused ideas become our shared "intellectual capital" saved for future inspiration.
-            </div>
-        </div>
-
-        <!-- Slide 10 -->
-        <div class="slide">
-            <h1>Team Up</h1>
-            <div class="slide-number">Slide 10 (Sprint Phase 5)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A diverse group of people huddling around a single blueprint.</p>
-            </div>
-            <div class="talking-point">
-                Join a Candidate Pod. Stop working solo. Co-evolve your understanding of the problem and consolidate your collective evidence into one rich, complex map.
-            </div>
-        </div>
-
-        <!-- Slide 11 -->
-        <div class="slide">
-            <h1>The EOD Pitch</h1>
-            <div class="slide-number">Slide 11 (Today's Deliverable)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A sleek, high-impact website landing page on a laptop screen.</p>
-            </div>
-            <div class="talking-point">
-                By the End of the Day, your Candidate Pod will deliver a presentation and a website. Pitch an irresistible opportunity for investigation to the entire upskilling community.
-            </div>
-        </div>
-
-        <!-- Slide 12 -->
-        <div class="slide">
-            <h1>The Ultimate Test</h1>
-            <div class="slide-number">Slide 12 (Deadline: Aug 1)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A progress bar crossing a red "12+" threshold line.</p>
-            </div>
-            <div class="talking-point">
-                Your Candidate Pod must use your EOD pitch to recruit 12 or more active members. Only teams that cross this threshold will officially initiate and advance.
-            </div>
-        </div>
-
-        <!-- Slide 13 -->
-        <div class="slide">
-            <h1>The Month of Saturation</h1>
-            <div class="slide-number">Slide 13 (July 26 – Aug 10)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>People out in a city street, observing and taking notes on tablets.</p>
-            </div>
-            <div class="talking-point">
-                Leave the building. Immerse yourselves in the field to gain firsthand experience and build genuine empathy. Use your tech to test if your themes hold up against real-world behaviors.
-            </div>
-        </div>
-
-        <!-- Slide 14 -->
-        <div class="slide">
-            <h1>Meet the Pods</h1>
-            <div class="slide-number">Slide 14 (Aug 11)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A bustling, high-energy recruitment fair.</p>
-            </div>
-            <div class="talking-point">
-                The exclusive showcase for official 12+ person Pods. Present your deep research and real-world empathy. Invite even more upskillers to join your cause for the Hackathon.
-            </div>
-        </div>
-
-        <!-- Slide 15 -->
-        <div class="slide">
-            <h1>The Creative Leap</h1>
-            <div class="slide-number">Slide 15 (Due Aug 15)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A person looking through a uniquely shaped window frame.</p>
-            </div>
-            <div class="talking-point">
-                Step 6 (Frames). With your massive Pod aligned, make the creative leap. Invent your Frame—a completely new perspective phrased as: "If the problem situation is approached as if it is... then...".
-            </div>
-        </div>
-
-        <!-- Slide 16 -->
-        <div class="slide">
-            <h1>The Hackathon</h1>
-            <div class="slide-number">Slide 16 (Aug 15)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A large tree branching off into several fast-growing branches.</p>
-            </div>
-            <div class="talking-point">
-                Step 7 (Futures). Your 12+ Pod now branches into lean 3-5 person proto-project teams. Use your shared frame to brainstorm rapidly and test completely different tech solutions simultaneously.
-            </div>
-        </div>
-
-        <!-- Slide 17 -->
-        <div class="slide">
-            <h1>Prototyping Futures</h1>
-            <div class="slide-number">Slide 17</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>Rapid digital wireframes and lightweight app interfaces.</p>
-            </div>
-            <div class="talking-point">
-                Don't commit to a single massive build yet. Create lightweight digital prototypes and interactive scenarios to test how your proposed tech solutions will actually play out in the real world.
-            </div>
-        </div>
-
-        <!-- Slide 18 -->
-        <div class="slide">
-            <h1>The Crucible</h1>
-            <div class="slide-number">Slide 18 (Aug 16 - Sept 14)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A tech team shaking hands with a community organization leader.</p>
-            </div>
-            <div class="talking-point">
-                Step 8 (Transformation). Critically evaluate feasibility. You must use your prototype to broker an alliance with a specific client or coalition willing to partner with you.
-            </div>
-        </div>
-
-        <!-- Slide 19 -->
-        <div class="slide">
-            <h1>Meet the Projects</h1>
-            <div class="slide-number">Slide 19 (Sept 15)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A graduation cap sitting on top of a server rack.</p>
-            </div>
-            <div class="talking-point">
-                Secure your "Problem Owner." The 3-5 person teams that successfully secure a real-world partner graduate to become official Project Teams, locking in their focus for the final build.
-            </div>
-        </div>
-
-        <!-- Slide 20 -->
-        <div class="slide">
-            <h1>Demo Day & Showcase</h1>
-            <div class="slide-number">Slide 20 (Oct 13)</div>
-            <div class="visual-placeholder">
-                <span>[ VISUAL ]</span>
-                <p>A fully functioning tech app being used seamlessly in a real-world setting.</p>
-            </div>
-            <div class="talking-point">
-                Step 9 (Integration). The finish line. You deliver the final, fully functional tech build, beautifully integrated into the everyday context of your problem owner. This is your remarkable and meaningful portfolio.
-            </div>
+            <div class="slide-counter" id="slide-num">00 / 20</div>
         </div>
     </div>
 
     <!-- Persistent Controls -->
     <div class="controls">
-        <button id="btn-download" title="Download Speaking Notes">📥 Script</button>
-        <button id="btn-fullscreen" title="Toggle Full Screen">⛶ Fullscreen</button>
+        <button class="btn-labs" id="btn-download">Script</button>
+        <button class="btn-labs" id="btn-fullscreen">Fullscreen</button>
     </div>
 
     <script>
         const slides = document.querySelectorAll('.slide');
         const progressBar = document.getElementById('progress-bar');
+        const slideNumDisplay = document.getElementById('slide-num');
         let currentSlide = 0;
 
         function updateProgress() {
-            // Calculate width percentage based on current slide
-            const percentage = ((currentSlide) / (slides.length - 1)) * 100;
+            const percentage = (currentSlide / (slides.length - 1)) * 100;
             progressBar.style.width = percentage + '%';
+            
+            // Format slide counter (e.g., 01 / 20)
+            const formattedCurrent = String(currentSlide).padStart(2, '0');
+            const formattedTotal = String(slides.length - 1).padStart(2, '0');
+            slideNumDisplay.innerText = `${formattedCurrent} / ${formattedTotal}`;
         }
 
         function showSlide(index) {
             slides[currentSlide].classList.remove('active');
-            
-            // Loop functionality
             if (index >= slides.length) {
                 currentSlide = 0;
             } else if (index < 0) {
@@ -446,7 +784,6 @@
             } else {
                 currentSlide = index;
             }
-            
             slides[currentSlide].classList.add('active');
             updateProgress();
         }
@@ -454,35 +791,35 @@
         // Keyboard Navigation (Spacebar, Right/Left Arrows)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ') {
-                e.preventDefault(); // Prevent page scroll on spacebar
+                e.preventDefault();
                 showSlide(currentSlide + 1);
             } else if (e.key === 'ArrowLeft') {
                 showSlide(currentSlide - 1);
             }
         });
 
-        // Fullscreen Toggle Logic
+        // Fullscreen Toggle
         const fullscreenBtn = document.getElementById('btn-fullscreen');
         fullscreenBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                    console.log(`Fullscreen error: ${err.message}`);
                 });
             } else {
                 document.exitFullscreen();
             }
         });
 
-        // Dynamic Script Download Logic
+        // Script Download
         const downloadBtn = document.getElementById('btn-download');
         downloadBtn.addEventListener('click', () => {
-            let scriptContent = "The Build Cycle: Presentation Script\n\n";
+            let scriptContent = "The Build Cycle: From Sensemaking to Showcase\nPresentation Speaking Script\nThe Upskilling Labs · 2026\n\n";
             
             slides.forEach((slide, index) => {
-                if (index === 0) return; // Skip title slide
+                if (index === 0) return;
                 const title = slide.querySelector('h1').innerText;
                 const point = slide.querySelector('.talking-point').innerText;
-                scriptContent += `--- SLIDE ${index}: ${title} ---\n`;
+                scriptContent += `--- SLIDE ${String(index).padStart(2, '0')}: ${title} ---\n`;
                 scriptContent += `TALKING POINT:\n${point}\n\n`;
             });
 
@@ -491,14 +828,13 @@
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = 'PechaKucha_Script.txt';
+            a.download = 'Build_Cycle_PechaKucha_Script.txt';
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
         });
 
-        // Initialize progress bar
         updateProgress();
     </script>
 </body>

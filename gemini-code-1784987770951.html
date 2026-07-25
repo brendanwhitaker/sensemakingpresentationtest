@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Build Cycle: From Sensemaking to Showcase</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #f5f5f5;
+            --accent-color: #4CAF50;
+            --visual-bg: #2a2a2a;
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; /* Prevents scrolling */
+        }
+
+        #presentation-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 80%;
+            max-width: 1200px;
+            height: 80%;
+            text-align: center;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+
+        .slide-number {
+            font-size: 1rem;
+            color: #888;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .visual-placeholder {
+            width: 100%;
+            max-width: 800px;
+            height: 350px;
+            background-color: var(--visual-bg);
+            border: 2px dashed #555;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .visual-placeholder span {
+            font-weight: bold;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        .visual-placeholder p {
+            font-size: 1.2rem;
+            color: #ddd;
+            margin: 0;
+            font-style: italic;
+        }
+
+        .talking-point {
+            font-size: 1.75rem;
+            line-height: 1.5;
+            max-width: 900px;
+            font-weight: 300;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        /* Progress Bar */
+        #progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-bar" style="width: 0%;"></div>
+
+    <div id="presentation-container">
+        
+        <!-- Slide 0: Title Slide -->
+        <div class="slide active">
+            <h1>The Build Cycle</h1>
+            <div class="slide-number">From Sensemaking to Showcase</div>
+            <div class="talking-point" style="margin-top: 2rem;">
+                An intensive applied learning experience in Civics & Elections.
+            </div>
+            <p style="color: #666; margin-top: 4rem; font-size: 1rem;">Press <strong>Space</strong> or <strong>Right Arrow</strong> to begin.</p>
+        </div>
+
+        <!-- Slide 1 -->
+        <div class="slide">
+            <h1>Your "Why"</h1>
+            <div class="slide-number">Slide 1</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A split screen: on one side, a sleek, highly professional digital portfolio; on the other, a tangled, messy web representing the real world.</p>
+            </div>
+            <div class="talking-point">
+                You are here for an intensive applied learning experience. By using your emerging tech skills to tackle complex real-world issues in Civics & Elections, you will build a portfolio of work that is not just well-coded, but truly remarkable AND deeply meaningful.
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+            <h1>Not a Simple Puzzle</h1>
+            <div class="slide-number">Slide 2</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A chaotic, shifting constellation of interconnected dots.</p>
+            </div>
+            <div class="talking-point">
+                To build that remarkable portfolio, you can't solve simple puzzles. The issues we face are open, complex, dynamic, and networked problem situations. They are messy, lack clear boundaries, and change rapidly.
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+            <h1>The Traps to Avoid</h1>
+            <div class="slide-number">Slide 3</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A person trapped in a small cardboard box, and a lone knight facing a dragon.</p>
+            </div>
+            <div class="talking-point">
+                Resist the urge to jump straight to coding. If you lock onto an immediate solution, you trap yourself in a "self-made box" of obvious ideas, or become an isolated "lone warrior" trying to own the problem without collaboration.
+            </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide">
+            <h1>The 9-Step Process</h1>
+            <div class="slide-number">Slide 4</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A list of the 9 steps of Frame Innovation: 1. Archaeology, 2. Paradox, 3. Context, 4. Field, 5. Themes, 6. Frames, 7. Futures, 8. Transformation, 9. Integration.</p>
+            </div>
+            <div class="talking-point">
+                To solve the unsolvable, we adapt Kees Dorst’s 9-Step Frame Innovation process. Today, our Sprint focuses purely on mapping the problem using Steps 1 through 5.
+            </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="slide">
+            <h1>Not a Staircase, a Cycle</h1>
+            <div class="slide-number">Slide 5</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A swirling, recursive spiral rather than a straight staircase.</p>
+            </div>
+            <div class="talking-point">
+                Don't be fooled by the numbered list. Frame innovation is "deceptively linear". In reality, it is a recursive cycle where you will constantly zoom in on the details and zoom out to see the big picture.
+            </div>
+        </div>
+
+        <!-- Slide 6 -->
+        <div class="slide">
+            <h1>Solo Sensemaking</h1>
+            <div class="slide-number">Slide 6 (Sprint Phase 1)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A detective’s evidence board with strings connecting data points.</p>
+            </div>
+            <div class="talking-point">
+                Step 3 & 4 (Context & Field). Start individually. Use your tech skills as sensemaking instruments. Radically widen the arena to map the broad "field" of all potential players and their power dynamics.
+            </div>
+        </div>
+
+        <!-- Slide 7 -->
+        <div class="slide">
+            <h1>The Mash-Up</h1>
+            <div class="slide-number">Slide 7 (Sprint Phase 2)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>Several overlapping maps merging into one large landscape.</p>
+            </div>
+            <div class="talking-point">
+                Step 5 (Themes). Merge your individual maps with peers for a "feature harvest." Look for the deep, universal human needs—like trust, isolation, or identity—that are driving the behavior of the players.
+            </div>
+        </div>
+
+        <!-- Slide 8 -->
+        <div class="slide">
+            <h1>The Fork</h1>
+            <div class="slide-number">Slide 8 (Sprint Phase 3)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A fork in the road leading to a giant question mark.</p>
+            </div>
+            <div class="talking-point">
+                Step 2 (Paradox). Break away to propose an evidence-backed problem arena built around a core "paradox". You are not pitching a solution; you are pitching a compelling, unresolved mystery.
+            </div>
+        </div>
+
+        <!-- Slide 9 -->
+        <div class="slide">
+            <h1>Curation</h1>
+            <div class="slide-number">Slide 9 (Sprint Phase 4)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>Ideas pinned to a bright office wall.</p>
+            </div>
+            <div class="talking-point">
+                The community votes, and 4 to 6 seeds become Candidate Pods. If your idea isn't chosen, it's not a "no." Unused ideas become our shared "intellectual capital" saved for future inspiration.
+            </div>
+        </div>
+
+        <!-- Slide 10 -->
+        <div class="slide">
+            <h1>Team Up</h1>
+            <div class="slide-number">Slide 10 (Sprint Phase 5)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A diverse group of people huddling around a single blueprint.</p>
+            </div>
+            <div class="talking-point">
+                Join a Candidate Pod. Stop working solo. Co-evolve your understanding of the problem and consolidate your collective evidence into one rich, complex map.
+            </div>
+        </div>
+
+        <!-- Slide 11 -->
+        <div class="slide">
+            <h1>The EOD Pitch</h1>
+            <div class="slide-number">Slide 11 (Today's Deliverable)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A sleek, high-impact website landing page on a laptop screen.</p>
+            </div>
+            <div class="talking-point">
+                By the End of the Day, your Candidate Pod will deliver a presentation and a website. Pitch an irresistible opportunity for investigation to the entire upskilling community.
+            </div>
+        </div>
+
+        <!-- Slide 12 -->
+        <div class="slide">
+            <h1>The Ultimate Test</h1>
+            <div class="slide-number">Slide 12 (Deadline: Aug 1)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A progress bar crossing a red "12+" threshold line.</p>
+            </div>
+            <div class="talking-point">
+                Your Candidate Pod must use your EOD pitch to recruit 12 or more active members. Only teams that cross this threshold will officially initiate and advance.
+            </div>
+        </div>
+
+        <!-- Slide 13 -->
+        <div class="slide">
+            <h1>The Month of Saturation</h1>
+            <div class="slide-number">Slide 13 (July 26 – Aug 10)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>People out in a city street, observing and taking notes on tablets.</p>
+            </div>
+            <div class="talking-point">
+                Leave the building. Immerse yourselves in the field to gain firsthand experience and build genuine empathy. Use your tech to test if your themes hold up against real-world behaviors.
+            </div>
+        </div>
+
+        <!-- Slide 14 -->
+        <div class="slide">
+            <h1>Meet the Pods</h1>
+            <div class="slide-number">Slide 14 (Aug 11)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A bustling, high-energy recruitment fair.</p>
+            </div>
+            <div class="talking-point">
+                The exclusive showcase for official 12+ person Pods. Present your deep research and real-world empathy. Invite even more upskillers to join your cause for the Hackathon.
+            </div>
+        </div>
+
+        <!-- Slide 15 -->
+        <div class="slide">
+            <h1>The Creative Leap</h1>
+            <div class="slide-number">Slide 15 (Due Aug 15)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A person looking through a uniquely shaped window frame.</p>
+            </div>
+            <div class="talking-point">
+                Step 6 (Frames). With your massive Pod aligned, make the creative leap. Invent your Frame—a completely new perspective phrased as: "If the problem situation is approached as if it is... then...".
+            </div>
+        </div>
+
+        <!-- Slide 16 -->
+        <div class="slide">
+            <h1>The Hackathon</h1>
+            <div class="slide-number">Slide 16 (Aug 15)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A large tree branching off into several fast-growing branches.</p>
+            </div>
+            <div class="talking-point">
+                Step 7 (Futures). Your 12+ Pod now branches into lean 3-5 person proto-project teams. Use your shared frame to brainstorm rapidly and test completely different tech solutions simultaneously.
+            </div>
+        </div>
+
+        <!-- Slide 17 -->
+        <div class="slide">
+            <h1>Prototyping Futures</h1>
+            <div class="slide-number">Slide 17</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>Rapid digital wireframes and lightweight app interfaces.</p>
+            </div>
+            <div class="talking-point">
+                Don't commit to a single massive build yet. Create lightweight digital prototypes and interactive scenarios to test how your proposed tech solutions will actually play out in the real world.
+            </div>
+        </div>
+
+        <!-- Slide 18 -->
+        <div class="slide">
+            <h1>The Crucible</h1>
+            <div class="slide-number">Slide 18 (Aug 16 - Sept 14)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A tech team shaking hands with a community organization leader.</p>
+            </div>
+            <div class="talking-point">
+                Step 8 (Transformation). Critically evaluate feasibility. You must use your prototype to broker an alliance with a specific client or coalition willing to partner with you.
+            </div>
+        </div>
+
+        <!-- Slide 19 -->
+        <div class="slide">
+            <h1>Meet the Projects</h1>
+            <div class="slide-number">Slide 19 (Sept 15)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A graduation cap sitting on top of a server rack.</p>
+            </div>
+            <div class="talking-point">
+                Secure your "Problem Owner." The 3-5 person teams that successfully secure a real-world partner graduate to become official Project Teams, locking in their focus for the final build.
+            </div>
+        </div>
+
+        <!-- Slide 20 -->
+        <div class="slide">
+            <h1>Demo Day & Showcase</h1>
+            <div class="slide-number">Slide 20 (Oct 13)</div>
+            <div class="visual-placeholder">
+                <span>[ VISUAL ]</span>
+                <p>A fully functioning tech app being used seamlessly in a real-world setting.</p>
+            </div>
+            <div class="talking-point">
+                Step 9 (Integration). The finish line. You deliver the final, fully functional tech build, beautifully integrated into the everyday context of your problem owner. This is your remarkable and meaningful portfolio.
+            </div>
+        </div>
+    </div>
+
+    <!-- Persistent Controls -->
+    <div class="controls">
+        <button id="btn-download" title="Download Speaking Notes">📥 Script</button>
+        <button id="btn-fullscreen" title="Toggle Full Screen">⛶ Fullscreen</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+        let currentSlide = 0;
+
+        function updateProgress() {
+            // Calculate width percentage based on current slide
+            const percentage = ((currentSlide) / (slides.length - 1)) * 100;
+            progressBar.style.width = percentage + '%';
+        }
+
+        function showSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            
+            // Loop functionality
+            if (index >= slides.length) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = slides.length - 1;
+            } else {
+                currentSlide = index;
+            }
+            
+            slides[currentSlide].classList.add('active');
+            updateProgress();
+        }
+
+        // Keyboard Navigation (Spacebar, Right/Left Arrows)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault(); // Prevent page scroll on spacebar
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        // Fullscreen Toggle Logic
+        const fullscreenBtn = document.getElementById('btn-fullscreen');
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        // Dynamic Script Download Logic
+        const downloadBtn = document.getElementById('btn-download');
+        downloadBtn.addEventListener('click', () => {
+            let scriptContent = "The Build Cycle: Presentation Script\n\n";
+            
+            slides.forEach((slide, index) => {
+                if (index === 0) return; // Skip title slide
+                const title = slide.querySelector('h1').innerText;
+                const point = slide.querySelector('.talking-point').innerText;
+                scriptContent += `--- SLIDE ${index}: ${title} ---\n`;
+                scriptContent += `TALKING POINT:\n${point}\n\n`;
+            });
+
+            const blob = new Blob([scriptContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'PechaKucha_Script.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        });
+
+        // Initialize progress bar
+        updateProgress();
+    </script>
+</body>
+</html>
